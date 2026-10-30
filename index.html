@@ -872,13 +872,13 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:0;border-radiu
       <p class="lead rv" style="--d:.15s">O rake da sua sala vem das partidas dos seus jogadores. A Sirius desconta só a parte dela. O resto é seu.</p>
     </div>
     <div class="plans">
-      <div class="plan feat rv"><span class="badge">Sua sala</span><span class="lbl">Você recebe</span><p class="price">75%</p><p class="per">do rake, todo mês</p>
-        <div class="split-bar" aria-hidden="true"><i style="flex:75"></i><i style="flex:10"></i><i style="flex:10"></i><i style="flex:5"></i></div>
+      <div class="plan feat rv"><span class="badge">Sua sala</span><span class="lbl">Você recebe</span><p class="price">50%</p><p class="per">do rake, todo mês</p>
+        <div class="split-bar" aria-hidden="true"><i style="flex:50"></i><i style="flex:50"></i></div>
         <ul><li><span><svg><use href="#i-check"/></svg>Pagamento até o dia 15</span></li><li><span><svg><use href="#i-check"/></svg>Sem saldo negativo por desempenho</span></li><li><span><svg><use href="#i-check"/></svg>Painel on-line com tudo</span></li></ul>
-        <p class="fine">Com liquidity e o Sirius One acima do mínimo (rake da sala acima de R$ 500 mil por mês).</p></div>
-      <div class="plan rv" style="--d:.1s"><span class="lbl">Taxas Sirius</span><p class="price">25%</p><p class="per">do rake, compensado no extrato</p>
-        <ul><li><span>Taxa dos jogos</span><b>10% do rake</b></li><li><span class="two">Sirius One<small>Player account manager</small></span><b>5% do rake</b></li><li><span class="two">Liquidity<small>Opcional</small></span><b>10% do rake</b></li></ul>
-        <p class="fine">O Sirius One tem mínimo de R$ 25 mil por mês. A liquidity é opcional e dá acesso às mesas compartilhadas.</p></div>
+        <p class="fine">A outra metade é a estrutura Sirius, tudo junto, sem taxas separadas.</p></div>
+      <div class="plan rv" style="--d:.1s"><span class="lbl">Taxas Sirius</span><p class="price">50%</p><p class="per">do rake, compensado no extrato</p>
+        <ul><li><span class="two">Estrutura Sirius<small>Jogos, Sirius One e liquidity</small></span><b>50% do rake</b></li></ul>
+        <p class="fine">Inclui os jogos, a gestão dos jogadores (Sirius One) e as mesas compartilhadas (liquidity).</p></div>
       <div class="plan rv" style="--d:.2s"><span class="lbl">Setup da sala</span><p class="price">R$ 50 mil</p><p class="per">uma vez, na assinatura</p>
         <ul><li><span><svg><use href="#i-check"/></svg>Site e app com a sua marca</span></li><li><span><svg><use href="#i-check"/></svg>Domínio no seu nome</span></li><li><span><svg><use href="#i-check"/></svg>Personagem da marca</span></li><li><span><svg><use href="#i-check"/></svg>No ar em 1 semana</span></li></ul></div>
     </div>
@@ -914,7 +914,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:0;border-radiu
         <label><span class="top">Novos cadastros no 1º mês<output id="o-c"></output></span><input type="range" id="c" min="100" max="20000" step="100" value="1000"></label>
         <label><span class="top">Partidas por jogador, por noite<output id="o-p"></output></span><input type="range" id="p" min="1" max="60" step="1" value="20"></label>
         <label><span class="top">Ticket médio por jogador, por partida<output id="o-b"></output></span><input type="range" id="b" min="1" max="50" step="1" value="1"></label>
-        <label class="swr"><span><b>Liquidity</b><small>Mesas compartilhadas · 10% do rake</small></span><input type="checkbox" id="lq" checked><i class="sw" aria-hidden="true"></i></label>
+        
         <details class="more"><summary>Mais ajustes<svg><use href="#i-chev"/></svg></summary>
           <div class="more-in">
             <label><span class="top">Crescimento ao mês<output id="o-g"></output></span><input type="range" id="g" min="0" max="30" step="1" value="10"></label>
@@ -934,9 +934,9 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:0;border-radiu
           <div class="brk">
             <div><span>Rodadas no mês 24</span><b id="rnd"></b></div>
             <div><span>Rake da sala</span><b id="b-ggr"></b></div>
-            <div><span>(−) Taxa dos jogos · 10% do rake</span><b id="b-tx"></b></div>
-            <div><span class="two">(−) Sirius One · 5% do rake<small id="b-min"></small></span><b id="b-so"></b></div>
-            <div><span>(−) Liquidity · 10% do rake</span><b id="b-lq"></b></div>
+            <div><span>(−) Estrutura Sirius · 50% do rake</span><b id="b-tx"></b></div>
+            
+            
             <div><span>(−) Setup da sala · uma vez</span><b>−R$ 50.000</b></div>
             <div class="tot"><span>Resultado</span><b id="b-res"></b></div>
           </div>
@@ -1208,24 +1208,21 @@ function calc() {
     el.style.setProperty('--p', ((el.value - el.min) / (el.max - el.min) * 100) + '%');
   });
   const gs = $$('.gch.on'), rk = gs.reduce((t, g) => t + +g.dataset.r, 0) / gs.length / 100;
-  const perMesa = gs.reduce((t, g) => t + 1 / g.dataset.s, 0) / gs.length, rpp = v.b * rk, liq = $('#lq').checked;
+  const perMesa = gs.reduce((t, g) => t + 1 / g.dataset.s, 0) / gs.length, rpp = v.b * rk, liq = false;
   $('#o-j').textContent = 'rake ' + pct(rk * 100);
   let act = 0, tot = 0, ggrT = 0, txT = 0, soT = 0, lqT = 0, minM = 0, rodadas = 0; const res = [];
   for (let m = 1; m <= 24; m++) {
     const neu = v.c * Math.pow(1 + v.g / 100, m - 1);
     act = v.a / 100 * neu + v.r / 100 * act;
     rodadas = act * v.p * v.n * perMesa;
-    const ggr = act * rpp * v.p * v.n, tx = .1 * ggr, lq = liq ? .1 * ggr : 0;   // liquidity é opcional
-    const so = Math.max(.05 * ggr, 25000);   // mínimo obrigatório do cliente: R$ 25 mil até 5% do rake passar disso
-    if (.05 * ggr < 25000) minM++;
+    const ggr = act * rpp * v.p * v.n, tx = .5 * ggr, lq = 0;   // Mibr.LOS: estrutura Sirius = 50% do rake, tudo junto
+    const so = 0;
     const net = ggr - tx - so - lq - (m === 1 ? 50000 : 0);
     res.push(net); tot += net; ggrT += ggr; txT += tx; soT += so; lqT += lq;
   }
   animateTo(tot);
   $('#m24').textContent = short(res[23]);
   $('#b-ggr').textContent = brl(ggrT); $('#b-tx').textContent = '−' + brl(txT);
-  $('#b-so').textContent = '−' + brl(soT); $('#b-lq').textContent = liq ? '−' + brl(lqT) : 'desligada';
-  $('#b-min').textContent = minM ? 'mínimo de R$ 25 mil/mês em ' + minM + ' dos 24 meses' : 'acima do mínimo de R$ 25 mil nos 24 meses';
   $('#b-res').textContent = brl(tot);
   $('#rnd').textContent = '≈ ' + cnt(rodadas);
   const mx = Math.max(...res.map(Math.abs), 1);
@@ -1243,7 +1240,6 @@ function animateTo(target) {
   raf = requestAnimationFrame(step);
 }
 $$('.ctl input[type=range]').forEach(el => el.addEventListener('input', calc));
-$('#lq').addEventListener('change', calc);
 $$('.gch').forEach(b => b.addEventListener('click', () => {
   if (b.classList.contains('on') && $$('.gch.on').length === 1) return;   // fica pelo menos um jogo na conta
   b.classList.toggle('on'); b.setAttribute('aria-pressed', b.classList.contains('on')); calc();
